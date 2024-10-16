@@ -12,7 +12,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new socketIo(server, {
   cors: {
-    origin: 'http://localhost:3000', // Allow requests from this origin
+    origin: 'https://poker-app-client.pages.dev/', // Allow requests from this origin
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true,
