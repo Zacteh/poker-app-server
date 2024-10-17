@@ -31,11 +31,6 @@ export class GameState {
   startGame() {
     this.started = true;
     this.gameIndex++;
-    this.players.forEach((player) => {
-      player.ready = false;
-    });
-    this.resetPlayersActed();
-    this.resetPlayersActionsThisTurn();
 
     const suits = ['S', 'D', 'C', 'H'];
     const ranks = Array.from({ length: 13 }, (_, i) => i + 1);
@@ -48,6 +43,12 @@ export class GameState {
       player.cards = [this.drawCard(), this.drawCard()];
     });
     this.checkRank();
+
+    this.players.forEach((player) => {
+      player.ready = false;
+    });
+    this.resetPlayersActed();
+    this.resetPlayersActionsThisTurn();
 
     // Determining the dealer, bb, sb position
     const dealerIndex = this.gameIndex % this.players.length;
@@ -182,6 +183,7 @@ export class GameState {
     this.players.forEach((player) => {
       player.cards = [];
       player.potIndex = 0;
+      player.endTurn();
     });
 
     this.started = false;
@@ -192,11 +194,11 @@ export class GameState {
   }
 
   afterPlayerAction(targetPlayerIndex) {
-    this.resetTakeTurn();
     const nextPlayerIndex = this.findNextPlayerIndex(targetPlayerIndex);
     const nextPlayer = this.players[nextPlayerIndex];
 
     if (this.findNextPlayerIndex(nextPlayerIndex) === null) {
+      this.collectChipsToPot();
       nextPlayer.get(
         this.pot.reduce((accumulator, currentValue) => {
           return accumulator + currentValue;
@@ -242,12 +244,6 @@ export class GameState {
       const bestHand = getBestHand(player.cards, this.communityCards);
       player.setCardRank(evaluateHand(bestHand).rank);
       player.bestHand = bestHand;
-    });
-  }
-
-  resetTakeTurn() {
-    this.players.forEach((player) => {
-      player.endTurn();
     });
   }
 }

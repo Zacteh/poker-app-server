@@ -1,5 +1,6 @@
 import express from 'express';
-import http from 'http';
+// import http from 'http';
+import https from 'https';
 import { Server as socketIo } from 'socket.io';
 import cors from 'cors';
 import { GameState } from './models/GameState.js';
@@ -8,8 +9,14 @@ import { Card } from './models/Card.js';
 import fs from 'fs';
 
 // Load SSL certificates
-const privateKey = fs.readFileSync('../key.pem', 'utf8');
-const certificate = fs.readFileSync('../cert.pem', 'utf8');
+const privateKey = fs.readFileSync(
+  '/etc/letsencrypt/live/123456712345.asia/privkey.pem',
+  'utf8'
+);
+const certificate = fs.readFileSync(
+  '/etc/letsencrypt/live/123456712345.asia/fullchain.pem',
+  'utf8'
+);
 
 const credentials = {
   key: privateKey,
@@ -26,7 +33,8 @@ app.use(
   })
 );
 
-const server = http.createServer(credentials, app);
+// const server = http.createServer(app);
+const server = https.createServer(credentials, app);
 const io = new socketIo(server, {
   cors: {
     origin: ['http://localhost:3000', 'https://poker-app-client.pages.dev'], // Allow requests from this origin
