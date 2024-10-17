@@ -5,14 +5,31 @@ import cors from 'cors';
 import { GameState } from './models/GameState.js';
 import pkg from 'lodash';
 import { Card } from './models/Card.js';
+import fs from 'fs';
+
+// Load SSL certificates
+const privateKey = fs.readFileSync('../key.pem', 'utf8');
+const certificate = fs.readFileSync('../cert.pem', 'utf8');
+
+const credentials = {
+  key: privateKey,
+  cert: certificate,
+};
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: ['http://localhost:3000', 'https://poker-app-client.pages.dev'], // Allow requests from these origins
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+    credentials: true,
+  })
+);
 
-const server = http.createServer(app);
+const server = http.createServer(credentials, app);
 const io = new socketIo(server, {
   cors: {
-    origin: 'https://poker-app-client.pages.dev', // Allow requests from this origin
+    origin: ['http://localhost:3000', 'https://poker-app-client.pages.dev'], // Allow requests from this origin
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true,
