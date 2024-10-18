@@ -56,6 +56,10 @@ export const broadcastGameState = () => {
 
   gameState.players.forEach((player) => {
     const partialGameState = pkg.cloneDeep(gameState);
+    // hide deck
+    partialGameState.deck = [];
+
+    // hide other players' cards
     partialGameState.players.forEach((p) => {
       if (p.id !== player.id && p.cards.length) {
         p.cardRank = 'unknown';
