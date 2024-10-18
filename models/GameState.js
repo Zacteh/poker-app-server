@@ -113,7 +113,7 @@ export class GameState {
           this.resetGame();
 
           broadcastGameState();
-        }, 5000);
+        }, 10000);
         return;
       default:
       // do nothing

@@ -85,7 +85,11 @@ io.on('connection', (socket) => {
       targetPlayer.ready = true;
       targetPlayer.name = action.value;
 
-      if (gameState.players.every((player) => player.ready)) {
+      if (
+        gameState.players.every(
+          (player) => player.ready && gameState.players.length > 1
+        )
+      ) {
         // game starts
         gameState.startGame();
       }
